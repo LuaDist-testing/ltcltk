@@ -1,16 +1,8 @@
--- This file was automatically generated for the LuaDist project.
-
 package = "ltcltk"
 version = "0.9-2"
--- LuaDist source
 source = {
-  tag = "0.9-2",
-  url = "git://github.com/LuaDist-testing/ltcltk.git"
+	url = "http://www.tset.de/downloads/ltcltk-0.9-2.tar.gz"
 }
--- Original source
--- source = {
--- 	url = "http://www.tset.de/downloads/ltcltk-0.9-2.tar.gz"
--- }
 description = {
 	summary = "A binding for lua to the tcl interpreter and to the tk toolkit.",
 	detailed = [[
@@ -52,3 +44,4 @@ build = {
 	-- this is part 2 of the abovementioned hack. Not pretty, but at least it works. kinda.
 	platforms={unix={modules={ltcl={incdirs = { "/usr/include/tk" }}}}} 
 }
+
