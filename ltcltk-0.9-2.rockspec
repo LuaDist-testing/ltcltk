@@ -1,15 +1,15 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "ltcltk"
-version = "0.9-1"
+version = "0.9-2"
 -- LuaDist source
 source = {
-  tag = "0.9-1",
+  tag = "0.9-2",
   url = "git://github.com/LuaDist-testing/ltcltk.git"
 }
 -- Original source
 -- source = {
--- 	url = "http://www.tset.de/downloads/ltcltk-0.9-1.tar.gz"
+-- 	url = "http://www.tset.de/downloads/ltcltk-0.9-2.tar.gz"
 -- }
 description = {
 	summary = "A binding for lua to the tcl interpreter and to the tk toolkit.",
@@ -19,7 +19,7 @@ description = {
 		registering of lua functions for use from tcl.
 		Also, a binding to the tk toolit is included.
 	]],
-	homepage = "http://www.tset.de/ltcltk.html",
+	homepage = "http://www.tset.de/ltcltk/",
 	license = "MIT/X11",
 	maintainer = "Gunnar Zötl <gz@tset.de>"
 }

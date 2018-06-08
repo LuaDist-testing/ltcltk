@@ -3,8 +3,7 @@
 --[[
  - ltkimage.lua
  -
- - an example for some ltk stuff.
- -
+ - an example for some ltk image stuff and idle callbacks
  -
  - Gunnar Zötl <gz@tset.de>, 2010.
  - Released under MIT/X11 license. See file LICENSE for details.
@@ -45,9 +44,12 @@ b = ltk.button {text="Close", command=function() ltk.exit() end}
 
 ltk.grid{c, row=1}
 ltk.grid{b, row=2}
+-- show window and all
 ltk.update()
 
+-- initial image
 drawimg()
 
+-- and run
 ltk.mainloop()
 

@@ -10,9 +10,8 @@
 local _G=_G
 
 module("ltk")
-
 _VERSION = 0.8
-_REVISION = 6
+_REVISION = 8
 
 -- references to global functions
 local _
@@ -155,8 +154,9 @@ local function makefixfunc(...)
 	if (select('#', ...) == 1 and type(farg) == 'table') then
 		fix = farg
 	else
-		fix= {...}
+		fix = {...}
 	end
+
 	return function(widget, args)
 		local reg = fixfunctionargs(fix, args)
 		local k
@@ -201,8 +201,9 @@ end
 --
 local function destroywidget(wid, hash, t, T, W)
 	local widget = widgets[wid]
-	-- this may happen when destroywidget is called on application shutdown.
-	if not widget then return end
+	-- this may happen when destroywidget is called on application shutdown or
+	-- if the destroy event trickles up a child-parent widget chain.
+	if (not widget) or (wid ~= W) then return end
 	-- call registered <Destroy> handlers
 	local destroyfns = widget.destroyfns or {}
 	for i=1, #destroyfns do
@@ -355,7 +356,7 @@ makewidget('button', {'command'})
 
 -- canvas widget
 makewidget('canvas', {'xscrollcommand', 'yscrollcommand'}, {
-	['bind'] = 3
+	['bind'] = {4}
 })
 
 -- checkbutton widget
@@ -408,7 +409,7 @@ makewidget('spinbox', {'command', 'xscrollcommand', 'invalidcommand', 'invcmd',
 makewidget('text', {'xscrollcommand', 'yscrollcommand'}, {
 	['create'] = {'create'},
 	['window'] = {'create'},
-	['bind'] = makefixfunc(3)
+	['tag'] = {5}
 })
 
 -- toplevel
@@ -418,87 +419,87 @@ makewidget('toplevel')
 
 -- ttk::button widget
 makewidget('ttk::button', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_button')
 
 -- ttk::checkbutton widget
 makewidget('ttk::checkbutton', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_checkbutton')
 
 -- ttk::combobox widget
 makewidget('ttk::combobox', {'postcommand'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_combobox')
 
 -- ttk:entry widget
 makewidget('ttk::entry', {'xscrollcommand', 'invalidcommand', 'validatecommand'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_entry')
 
 -- ttk::frame widget
 makewidget('ttk::frame', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_frame')
 
 -- ttk::label widget
 makewidget('ttk::label', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_label')
 
 -- ttk::labelframe widget
 makewidget('ttk::labelframe', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_labelframe')
 
 -- ttk::menubutton widget
 makewidget('ttk::menubutton', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_menubutton')
 
 -- ttk::notebook widget
 makewidget('ttk::notebook', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_notebook')
 
 -- ttk::panedwindow widget
 makewidget('ttk::panedwindow', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_panedwindow')
 
 -- ttk::progressbar widget
 makewidget('ttk::progressbar', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_progressbar')
 
 -- ttk::radiobutton widget
 makewidget('ttk::radiobutton', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_radiobutton')
 
 -- ttk::scale widget
 makewidget('ttk::scale', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_scale')
 
 -- ttk::scrollbar widget
 makewidget('ttk::scrollbar', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_scrollbar')
 
 -- ttk::separator widget
 makewidget('ttk::separator', nil, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_separator')
 
 -- ttk::sizegrip widget
 makewidget('ttk::sizegrip', {'command'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_sizegrip')
 
 -- ttk::treeview widget
 makewidget('ttk::treeview', {'xscrollcommand', 'yscrollcommand'}, {
-	['instate'] = makefixfunc(3)
+	['instate'] = {3}
 }, 'ttk_treeview')
 
 ----- tk and utility functions -----
@@ -511,8 +512,14 @@ end
 
 -- addtkwidget utility function
 --
-function addtkwidget(wtype, conf, cmds)
-	local mname = 'x_' .. wtype
+function addtkwidget(wtype, conf, cmds, uname)
+	local mname
+	if uname ~= nil then
+		mname = 'x_' .. uname
+	else
+		local fwtype = s_gsub(wtype, ':', '_')
+		mname = 'x_' .. fwtype
+	end
 	makewidget(wtype, conf, cmds, mname)
 end
 
